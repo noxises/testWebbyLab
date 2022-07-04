@@ -26,7 +26,7 @@ class MovieList
 
     public static function addForm()
     {
-        if (!$_SESSION['loggedIn']){
+        if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
         $view = new View();
@@ -36,7 +36,7 @@ class MovieList
 
     public static function create($inputs)
     {
-        if (!$_SESSION['loggedIn']){
+        if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
         $data = array();
@@ -45,8 +45,9 @@ class MovieList
         array_push($data, $inputs['year']);
         array_push($data, $inputs['format']);
         array_push($data, $inputs['actors']);
-        $movie = new Movie();
+
         if (!$movie = (new Movie())->find('title', $data[1])) {
+            $movie = new Movie();
             $movie->insert($data);
             $newArray = $movie->lastid();
             $lastInsertedMovie = $newArray[0];
@@ -55,15 +56,21 @@ class MovieList
         } else {
             return response(array('status' => 'danger', 'message' => 'Movie not created(title already exists)'));
         }
-       }
+    }
 
     static public function saveFromFile($file)
     {
-        if (!$_SESSION['loggedIn']){
+        if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
         $path = 'public/uploads/' . $_FILES['file']['name'];
         move_uploaded_file($_FILES['file']['tmp_name'], $path);
+        $info = new SplFileInfo($path);
+
+        if ($info->getExtension() != 'txt') {
+            return response(array('status' => 'danger', 'message' => 'Please use .txt files'));
+
+        }
         $content = file($path, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
         $i = 0;
         $data = array();
@@ -75,11 +82,23 @@ class MovieList
             switch ($separatedLine[0]) {
                 case 'Title':
                     array_push($data, null); //add null value for id
-                    $title = $separatedLine[1];
+                    unset($separatedLine[0]);
+                    $title = '';
+                    if (count($separatedLine) > 1) {
+                        $title = implode(':', $separatedLine);
+                    } else {
+                        $title = $separatedLine[1];
+                    }
                     array_push($data, $title);
                     break;
                 case 'Release Year':
-                    $year = $separatedLine[1];
+                    unset($separatedLine[0]);
+                    $year = '';
+                    if (count($separatedLine) > 1) {
+                        $year = implode(':', $separatedLine);
+                    } else {
+                        $year = $separatedLine[1];
+                    }
                     array_push($data, $year);
                     break;
                 case 'Format':
@@ -87,15 +106,22 @@ class MovieList
                     array_push($data, $format);
                     break;
                 case 'Stars':
-                    $actors = $separatedLine['1'];
+                    unset($separatedLine[0]);
+                    $actors = '';
+                    if (count($separatedLine) > 1) {
+                        $actors = implode(':', $separatedLine);
+                    } else {
+                        $actors = $separatedLine[1];
+                    }
                     array_push($data, $actors);
                     break;
                 default:
-                    $i--; //remove line with random symbols
+                    $i--;
                     break;
             }
             $i++;
             if ($i % 4 == 0) {
+                if (isset($data[1])){
                 if (!$movie = (new Movie())->find('title', $data[1])) {
                     $insertedMovies++;
                     (new Movie())->insert($data);
@@ -104,14 +130,18 @@ class MovieList
                 }
                 $data = array();
                 $i = 0;//reload film data
-            }
+            }}
+        }
+        if ($insertedMovies == 0 && $skippedMovies == 0) {
+            return response(array('status' => 'danger', 'message' => 'Please use file with movies info'));
+
         }
         return response(array('status' => 'success', 'message' => 'Inserted count of movies: ' . $insertedMovies . '.</br> Skipped count of movies: ' . $skippedMovies . ' (Because title already exist)'));
     }
 
     public static function delete($id)
     {
-        if (!$_SESSION['loggedIn']){
+        if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
         foreach ($id as $key => $value) {
@@ -122,13 +152,17 @@ class MovieList
 
     public static function findByTitle($inputs)
     {
-        $message = 'Nothing to show'. ' Request : ' . $inputs['search'];
 
+        $message = 'Nothing to show' . ' Request : ' . $inputs['search'];
+
+        $str = str_replace(["'", '"'], '', $inputs['search']);
+        $strType = str_replace(["'", '"'], '', $inputs['type']);
         $quer = new Movie();
-        $movies = $quer->findlike($inputs['type'], $inputs['search']);
+        $movies = $quer->findlike($strType, $str);
         if ($movies != null) {
             $message = 'Finded by ' . $inputs['type'] . ' Request : ' . $inputs['search'];
         }
+
         $view = new View();
         $content = $view->generate_html('Movie/list.php', ['movies' => $movies, 'message' => $message, 'js_sort' => true]);
         echo $view->generate_html('wrapper.php', ['title' => 'Search', 'content' => $content]);

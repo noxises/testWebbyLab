@@ -54,11 +54,11 @@ class Users
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['username'] = $user_data['username'];
                 $_SESSION['name'] = $user_data['name'];
+                return response(array('status' => 'success', 'message' => 'Logged'));
             }
-            else {
-                return response(array('status' => 'danger', 'message' => 'Username or password incorrect'));
-            }
+
         }
-        return response(array('status' => 'success', 'message' => 'Logged'));
+        return response(array('status' => 'danger', 'message' => 'Username or password incorrect'));
+
     }
 }

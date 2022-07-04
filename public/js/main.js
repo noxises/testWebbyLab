@@ -22,9 +22,15 @@ $(document).ready(() => {
             type: 'post',
             success: function (php_script_response) {
                 var message = $.parseJSON(php_script_response);
-                window.location.replace('/');
-                localStorage.setItem("Response", message.message)
-                localStorage.setItem("Status", message.status)
+                if (message.status==='success'){
+                    window.location.replace('/');
+                    localStorage.setItem("Response", message.message)
+                    localStorage.setItem("Status", message.status)
+                }else{
+                    $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${message.status}`).html(message.message);
+
+                }
+
             }
         });
 
@@ -161,5 +167,7 @@ $(document).ready(() => {
             }
         });
     });
+
+
 });
 
