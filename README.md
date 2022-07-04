@@ -13,3 +13,9 @@ For delete movie u should be logged in
 
 Some actions realised by jquery "public/js/main.js"
 
+Important: for save movies from txt file ,should be "uploads" folder in "/public"
+
+for start local server i used
+cd /project_root
+php -S localhost:8000
+
