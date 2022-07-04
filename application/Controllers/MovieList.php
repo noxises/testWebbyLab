@@ -26,6 +26,9 @@ class MovieList
 
     public static function addForm()
     {
+        if (!$_SESSION['loggedIn']){
+            header('Location: /');
+        }
         $view = new View();
         $content = $view->generate_html('Movie/create.php', []);
         echo $view->generate_html('wrapper.php', ['title' => 'Add movie', 'content' => $content]);
@@ -33,20 +36,32 @@ class MovieList
 
     public static function create($inputs)
     {
+        if (!$_SESSION['loggedIn']){
+            header('Location: /');
+        }
         $data = array();
+        array_push($data, null);
         array_push($data, $inputs['title']);
         array_push($data, $inputs['year']);
         array_push($data, $inputs['format']);
         array_push($data, $inputs['actors']);
         $movie = new Movie();
-        $movie->insert($data);
-        $newArray = $movie->lastid();
-        $lastInsertedMovie = $newArray[0];
-        return response(array('status' => 'success', 'id' => $lastInsertedMovie['LAST_INSERT_ID()'], 'message' => 'Created'));
-    }
+        if (!$movie = (new Movie())->find('title', $data[1])) {
+            $movie->insert($data);
+            $newArray = $movie->lastid();
+            $lastInsertedMovie = $newArray[0];
+            return response(array('status' => 'success', 'id' => $lastInsertedMovie['LAST_INSERT_ID()'], 'message' => 'Movie created'));
+
+        } else {
+            return response(array('status' => 'danger', 'message' => 'Movie not created(title already exists)'));
+        }
+       }
 
     static public function saveFromFile($file)
     {
+        if (!$_SESSION['loggedIn']){
+            header('Location: /');
+        }
         $path = 'public/uploads/' . $_FILES['file']['name'];
         move_uploaded_file($_FILES['file']['tmp_name'], $path);
         $content = file($path, FILE_SKIP_EMPTY_LINES | FILE_IGNORE_NEW_LINES);
@@ -96,6 +111,9 @@ class MovieList
 
     public static function delete($id)
     {
+        if (!$_SESSION['loggedIn']){
+            header('Location: /');
+        }
         foreach ($id as $key => $value) {
             (new Movie())->delete('id', $value);
         }
@@ -104,7 +122,7 @@ class MovieList
 
     public static function findByTitle($inputs)
     {
-        $message = 'Nothing to show';
+        $message = 'Nothing to show'. ' Request : ' . $inputs['search'];
 
         $quer = new Movie();
         $movies = $quer->findlike($inputs['type'], $inputs['search']);

@@ -22,7 +22,7 @@ $(document).ready(() => {
             type: 'post',
             success: function (php_script_response) {
                 var message = $.parseJSON(php_script_response);
-                window.location.replace('/movie/all');
+                window.location.replace('/');
                 localStorage.setItem("Response", message.message)
                 localStorage.setItem("Status", message.status)
             }
@@ -42,7 +42,7 @@ $(document).ready(() => {
             data: item,
             type: 'post',
             success: function (php_script_response) {
-                window.location.replace('/movie/all');
+                window.location.replace('/');
                 localStorage.setItem("Response", php_script_response.message)
                 localStorage.setItem("Status", php_script_response.status)
             },
@@ -87,7 +87,12 @@ $(document).ready(() => {
             type: 'post',
             success: function (php_script_response) {
                 $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${php_script_response.status}`).html(php_script_response.message);
-                $('#link_to_movie').show().attr("href", "/movie/" + php_script_response.id)
+
+                if(php_script_response.id != undefined){
+                    $('#link_to_movie').show().attr("href", "/movie/" + php_script_response.id)
+
+                }
+
             }
         });
 
@@ -110,7 +115,7 @@ $(document).ready(() => {
                 if (php_script_response.status === 'danger') {
                     $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${php_script_response.status}`).html(php_script_response.message);
                 } else {
-                    window.location.replace('/movie/all');
+                    window.location.replace('/');
                     localStorage.setItem("Response", php_script_response.message)
                     localStorage.setItem("Status", php_script_response.status)
                 }
@@ -136,7 +141,7 @@ $(document).ready(() => {
                 if (php_script_response.status === 'danger') {
                     $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${php_script_response.status}`).html(php_script_response.message);
                 } else {
-                    window.location.replace('/movie/all');
+                    window.location.replace('/');
                     localStorage.setItem("Response", php_script_response.message)
                     localStorage.setItem("Status", php_script_response.status)
                 }
@@ -150,7 +155,7 @@ $(document).ready(() => {
         $.ajax({
             url: '/logout',
             success: function (php_script_response) {
-                window.location.replace('/movie/all');
+                window.location.replace('/');
                 localStorage.setItem("Response", php_script_response.message)
                 localStorage.setItem("Status", php_script_response.status)
             }

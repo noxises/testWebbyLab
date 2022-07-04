@@ -36,7 +36,7 @@ class Users
             return response(array('status' => 'danger', 'message' => 'Username already exist'));
         }
         $user->insert($data);
-        return response(array('status' => 'success', 'message' => 'Created'));
+        return response(array('status' => 'success', 'message' => 'User created'));
     }
 
     static public function login($inputs)
@@ -44,16 +44,20 @@ class Users
         $user = new User();
         $_SESSION['loggedIn'] = false;
         $data = $user->find('username', $inputs['username']);
-        $user_data = $data[0];
+
+
         $encrypred_pass = md5($inputs['password']);
+
         if ($data) {
+            $user_data = $data[0];
             if ($user_data['username'] == $inputs['username'] && $user_data['password'] == $encrypred_pass) {
                 $_SESSION['loggedIn'] = true;
                 $_SESSION['username'] = $user_data['username'];
                 $_SESSION['name'] = $user_data['name'];
             }
-        } else {
-            return response(array('status' => 'danger', 'message' => 'Username or password incorrect'));
+            else {
+                return response(array('status' => 'danger', 'message' => 'Username or password incorrect'));
+            }
         }
         return response(array('status' => 'success', 'message' => 'Logged'));
     }

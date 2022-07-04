@@ -83,7 +83,9 @@ $array = json_encode($movies);
                 <td>${this.format}</td>
                 <td> ${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
+                <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
+                <?php }?>
             </tr>
         `)
         });
@@ -101,8 +103,10 @@ $array = json_encode($movies);
                 <td>${this.format}</td>
                 <td> ${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
+                <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
-            </tr>
+                <?php }?>
+                            </tr>
         `)
         });
     });
@@ -119,7 +123,9 @@ $array = json_encode($movies);
                 <td>${this.format}</td>
                 <td> ${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
+                <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
+                <?php }?>
             </tr>
         `)
         });
@@ -136,7 +142,9 @@ $array = json_encode($movies);
                 <td>${this.format}</td>
                 <td> ${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
+                <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
+                <?php }?>
             </tr>
         `)
         });

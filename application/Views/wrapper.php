@@ -21,19 +21,17 @@
                     <a class="nav-link active" aria-current="page" href="/">Home</a>
                 </li>
 
-
-                <li class="nav-item">
-                    <a class="nav-link" href="/movie/add">Add Movie</a>
-                </li>
-
                 <?php if (!$_SESSION['loggedIn']) { ?>
                     <li class="nav-item">
                         <a class="nav-link" href="/login">Login</a>
                     </li>
                 <?php } else { ?>
                     <li class="nav-item">
+                        <a class="nav-link" href="/movie/add">Add Movie</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" style="">Hello, <b
-                                style="font-style: italic;text-decoration: underline"><?= $_SESSION['name'] ?></b>!</a>
+                                    style="font-style: italic;text-decoration: underline"><?= $_SESSION['name'] ?></b>!</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" style="cursor: pointer;color: red" id="logout">Logout</a>
