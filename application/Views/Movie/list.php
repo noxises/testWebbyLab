@@ -52,28 +52,28 @@ $array = json_encode($movies);
 
 
 <script>
-    function SortByTitle(a, b) {
-        var aName = a.title.toLowerCase();
-        var bName = b.title.toLowerCase();
-        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-    }
 
-    function SortByActors(a, b) {
-        var aName = a.actors.toLowerCase();
-        var bName = b.actors.toLowerCase();
-        return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
-    }
 
     function SortByYear(a, b) {
         var aName = a.year.toLowerCase();
         var bName = b.year.toLowerCase();
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     }
+    function uaSort(s1, s2) {
+        var title= s1.title;
+        var title2= s2.title;
+        return title.localeCompare(title2);
+    }
+    function uaSortActors(s1, s2) {
+        var title= s1.actors;
+        var title2= s2.actors;
+        return title.localeCompare(title2);
+    }
 
     $('#sort_by_title').click(function () {
         $('tbody').html('');
         let array = <?= $array ?>;
-        array.sort(SortByTitle);
+        array.sort(uaSort);
         $.each(array, function () {
             $('tbody').append(`
             <tr>
@@ -93,7 +93,7 @@ $array = json_encode($movies);
     $('#sort_by_actors').click(function () {
         $('tbody').html('');
         let array = <?= $array ?>;
-        array.sort(SortByActors);
+        array.sort(uaSortActors);
         $.each(array, function () {
             $('tbody').append(`
             <tr>

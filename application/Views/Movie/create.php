@@ -9,8 +9,8 @@
             <label for="floatingInput">Title</label>
         </div>
         <div class="form-floating mb-3">
-            <input type="text" name="year" class="form-control" id="floatingPassword" placeholder="2000" required>
-            <label for="floatingPassword">Release year</label>
+            <input type="text" name="year" class="form-control" pattern="[0-9]{4}" id="floatingPassword" placeholder="2000" required>
+            <label for="floatingPassword">Release year (4 digits)</label>
         </div>
         <div class="form-floating mb-3">
             <select class="form-select" name="format" id="floatingSelect" aria-label="Floating label select example">

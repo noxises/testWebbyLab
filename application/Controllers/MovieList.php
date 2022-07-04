@@ -39,12 +39,17 @@ class MovieList
         if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
+        $title = htmlspecialchars($inputs['title']);
+        $year = htmlspecialchars($inputs['year']);
+        $format = htmlspecialchars($inputs['format']);
+        $actors = htmlspecialchars($inputs['actors']);
+
         $data = array();
         array_push($data, null);
-        array_push($data, $inputs['title']);
-        array_push($data, $inputs['year']);
-        array_push($data, $inputs['format']);
-        array_push($data, $inputs['actors']);
+        array_push($data, $title);
+        array_push($data, $year);
+        array_push($data, $format);
+        array_push($data, $actors);
 
         if (!$movie = (new Movie())->find('title', $data[1])) {
             $movie = new Movie();
@@ -89,7 +94,7 @@ class MovieList
                     } else {
                         $title = $separatedLine[1];
                     }
-                    array_push($data, $title);
+                    array_push($data, htmlspecialchars($title));
                     break;
                 case 'Release Year':
                     unset($separatedLine[0]);
@@ -99,11 +104,11 @@ class MovieList
                     } else {
                         $year = $separatedLine[1];
                     }
-                    array_push($data, $year);
+                    array_push($data, htmlspecialchars($year));
                     break;
                 case 'Format':
                     $format = $separatedLine[1];
-                    array_push($data, $format);
+                    array_push($data, htmlspecialchars($format));
                     break;
                 case 'Stars':
                     unset($separatedLine[0]);
@@ -113,7 +118,7 @@ class MovieList
                     } else {
                         $actors = $separatedLine[1];
                     }
-                    array_push($data, $actors);
+                    array_push($data, htmlspecialchars($actors));
                     break;
                 default:
                     $i--;
@@ -121,16 +126,17 @@ class MovieList
             }
             $i++;
             if ($i % 4 == 0) {
-                if (isset($data[1])){
-                if (!$movie = (new Movie())->find('title', $data[1])) {
-                    $insertedMovies++;
-                    (new Movie())->insert($data);
-                } else {
-                    $skippedMovies++;
+                if (isset($data[1])) {
+                    if (!$movie = (new Movie())->find('title', $data[1])) {
+                        $insertedMovies++;
+                        (new Movie())->insert($data);
+                    } else {
+                        $skippedMovies++;
+                    }
+                    $data = array();
+                    $i = 0;//reload film data
                 }
-                $data = array();
-                $i = 0;//reload film data
-            }}
+            }
         }
         if ($insertedMovies == 0 && $skippedMovies == 0) {
             return response(array('status' => 'danger', 'message' => 'Please use file with movies info'));
@@ -153,14 +159,14 @@ class MovieList
     public static function findByTitle($inputs)
     {
 
-        $message = 'Nothing to show' . ' Request : ' . $inputs['search'];
+        $message = 'Nothing to show' . ' Request : ' . htmlspecialchars($inputs['search']);
 
         $str = str_replace(["'", '"'], '', $inputs['search']);
         $strType = str_replace(["'", '"'], '', $inputs['type']);
         $quer = new Movie();
         $movies = $quer->findlike($strType, $str);
         if ($movies != null) {
-            $message = 'Finded by ' . $inputs['type'] . ' Request : ' . $inputs['search'];
+            $message = 'Finded by ' . htmlspecialchars($inputs['type']) . ' Request : ' . htmlspecialchars($inputs['search']);
         }
 
         $view = new View();
