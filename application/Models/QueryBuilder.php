@@ -24,7 +24,7 @@ class QueryBuilder
 
     public function like($column, $value)
     {
-        $this->query = 'SELECT * FROM ' . $this->table_name . " WHERE " . $column . " LIKE '%" . $value . "%'";
+        $this->query = 'SELECT * FROM ' . $this->table_name . " WHERE LOWER(" . $column . ") LIKE LOWER('%" . $value . "%')";
         return $this;
     }
 

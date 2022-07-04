@@ -11,6 +11,7 @@ class MovieList
         $content = $view->generate_html('Movie/list.php', ['movies' => $movies]);
         echo $view->generate_html('wrapper.php', ['title' => 'Movies', 'content' => $content, 'js_sort' => true]);
     }
+
     public static function info()
     {
         $separetedLink = explode('/', $_SERVER['PATH_INFO']);
@@ -108,7 +109,7 @@ class MovieList
         $quer = new Movie();
         $movies = $quer->findlike($inputs['type'], $inputs['search']);
         if ($movies != null) {
-            $message = 'Finded by ' . $inputs['type'];
+            $message = 'Finded by ' . $inputs['type'] . ' Request : ' . $inputs['search'];
         }
         $view = new View();
         $content = $view->generate_html('Movie/list.php', ['movies' => $movies, 'message' => $message, 'js_sort' => true]);
