@@ -17,14 +17,17 @@ class QueryBuilder
 
     public function select($colums)
     {
-        $this->query = 'SELECT ' . implode(',', $colums) . ' FROM ' . $this->table_name;
+        $this->query = "SELECT " . implode(',', $colums) . " FROM " . $this->table_name;
         return $this;
     }
 
 
     public function like($column, $value)
     {
-        $this->query = 'SELECT * FROM ' . $this->table_name . " WHERE LOWER(" . $column . ") LIKE LOWER('%" . $value . "%')";
+        $finally ="%" . strtolower($value) . "%";
+        array_push($this->data, $finally);
+
+        $this->query .= " WHERE LOWER(" . $column . ") LIKE " . "?" ;
         return $this;
     }
 
@@ -68,23 +71,32 @@ class QueryBuilder
 
     private function bind()
     {
+
         $this->stmt = $this->db->prepare($this->query);
 
         if ($this->data != null) {
+
             $params = array();
             array_push($params, $this->getTypes());
             $params = array_merge($params, $this->data);
+
             foreach ($params as $key => $value) $params[$key] = &$params[$key];
+
             call_user_func_array(array($this->stmt, 'bind_param'), $params);
+
         }
 
         $this->data = array();
+
         $this->stmt->execute();
+
         return $this->stmt;
     }
 
     public function get()
     {
+
+
         return mysqli_fetch_all($this->bind()->get_result(), MYSQLI_ASSOC);
     }
 

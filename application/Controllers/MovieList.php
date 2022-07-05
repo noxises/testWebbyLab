@@ -8,6 +8,12 @@ class MovieList
     {
         $movies = (new Movie())->all();
         $view = new View();
+        function filter(&$value)
+        {
+            $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
+        }
+
+        array_walk_recursive($movies, "filter");
         $content = $view->generate_html('Movie/list.php', ['movies' => $movies]);
         echo $view->generate_html('wrapper.php', ['title' => 'Movies', 'content' => $content, 'js_sort' => true]);
     }
@@ -18,6 +24,12 @@ class MovieList
         $id = $separetedLink[2];
         $movieArray = (new Movie())->find('id', $id);
         $movie = $movieArray[0];
+        function filter(&$value)
+        {
+            $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
+        }
+
+        array_walk_recursive($movie, "filter");
         $view = new View();
         $content = $view->generate_html('Movie/view.php', ['movie' => $movie]);
         echo $view->generate_html('wrapper.php', ['title' => $movie['title'], 'content' => $content]);
@@ -39,10 +51,10 @@ class MovieList
         if (!$_SESSION['loggedIn']) {
             header('Location: /');
         }
-        $title = htmlspecialchars($inputs['title']);
-        $year = htmlspecialchars($inputs['year']);
-        $format = htmlspecialchars($inputs['format']);
-        $actors = htmlspecialchars($inputs['actors']);
+        $title = $inputs['title'];
+        $year = $inputs['year'];
+        $format = $inputs['format'];
+        $actors = $inputs['actors'];
 
         $data = array();
         array_push($data, null);
@@ -94,7 +106,7 @@ class MovieList
                     } else {
                         $title = $separatedLine[1];
                     }
-                    array_push($data, htmlspecialchars($title));
+                    array_push($data, $title);
                     break;
                 case 'Release Year':
                     unset($separatedLine[0]);
@@ -104,11 +116,11 @@ class MovieList
                     } else {
                         $year = $separatedLine[1];
                     }
-                    array_push($data, htmlspecialchars($year));
+                    array_push($data, $year);
                     break;
                 case 'Format':
                     $format = $separatedLine[1];
-                    array_push($data, htmlspecialchars($format));
+                    array_push($data, $format);
                     break;
                 case 'Stars':
                     unset($separatedLine[0]);
@@ -118,7 +130,7 @@ class MovieList
                     } else {
                         $actors = $separatedLine[1];
                     }
-                    array_push($data, htmlspecialchars($actors));
+                    array_push($data, $actors);
                     break;
                 default:
                     $i--;
@@ -161,14 +173,17 @@ class MovieList
 
         $message = 'Nothing to show' . ' Request : ' . htmlspecialchars($inputs['search']);
 
-        $str = str_replace(["'", '"'], '', $inputs['search']);
-        $strType = str_replace(["'", '"'], '', $inputs['type']);
         $quer = new Movie();
-        $movies = $quer->findlike($strType, $str);
-        if ($movies != null) {
-            $message = 'Finded by ' . htmlspecialchars($inputs['type']) . ' Request : ' . htmlspecialchars($inputs['search']);
-        }
 
+        $movies = $quer->findlike($inputs['type'], $inputs['search']);
+        if ($movies != null) {
+            $message = 'Finded by ' . $inputs['type'] . ' Request : ' . $inputs['search'];
+        }
+        function filter(&$value)
+        {
+            $value = htmlspecialchars($value, ENT_NOQUOTES, 'UTF-8');
+        }
+        array_walk_recursive($movies, "filter");
         $view = new View();
         $content = $view->generate_html('Movie/list.php', ['movies' => $movies, 'message' => $message, 'js_sort' => true]);
         echo $view->generate_html('wrapper.php', ['title' => 'Search', 'content' => $content]);

@@ -20,7 +20,7 @@ class Movie extends QueryBuilder
 
     public function findLike($colunm, $value)
     {
-        return $this->like($colunm, $value)->get();
+        return $this->select(['*'])->like($colunm, $value)->get();
     }
 
     public function all()

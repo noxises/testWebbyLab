@@ -66,8 +66,6 @@ $(document).ready(() => {
             items[index] = $(this).val();
         });
         if (confirm('You really want to delete this movies?')) {
-
-
             $.ajax({
                 url: '/movie/delete',
                 cache: false,
@@ -78,22 +76,19 @@ $(document).ready(() => {
                     localStorage.setItem("Response", php_script_response.message)
                     localStorage.setItem("Status", php_script_response.status)
                     window.location.reload();
-
-
                 },
             });
         } else {
             window.location.reload();
         }
-
     });
 
     function CheckSpaces(str) {
         return str.trim() !== '';
     }
-
     $('#create').submit(function (e) {
         e.preventDefault();
+        let error = false;
         let inputs = {};
         $(this).find('input,select').each(function () {
             var name = $(this).attr("name");
@@ -101,43 +96,51 @@ $(document).ready(() => {
                 if (name === 'year') {
                     let value = parseInt($(this).val());
                     if (value < 1850 || value > 2021) {
+                        error = true;
                         return $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-danger`).html("Year must be between 1850 and 2021");
                     } else {
-                        inputs[name] = $(this).val();
-
+                        inputs[name] = $(this).val().trim();
                     }
                 } else {
                     let check = $(this).val().includes('<script>')
-                    if (!check){
-                        inputs[name] = $(this).val();
-                    }else{
-                        return $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-danger`).html(name+" Must not contain &ltscript&gt");
+                    if (!check) {
+                        inputs[name] = $(this).val().trim();
 
+                    } else {
+                        error = true;
+                        return $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-danger`).html(name + " Must not contain &ltscript&gt");
                     }
 
                 }
             } else {
+                error = true;
+
                 return $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-danger`).html(name + " Must not contain only spaces");
             }
         });
 
+        if (!error) {
 
-        $.ajax({
-            url: '/movie/create',
-            cache: false,
-            processData: true,
-            data: inputs,
-            type: 'post',
-            success: function (php_script_response) {
-                $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${php_script_response.status}`).html(php_script_response.message);
-                if (php_script_response.status != 'danger') {
-                    $('#create')[0].reset();
-                    $('#link_to_movie').show().attr("href", "/movie/" + php_script_response.id)
-                } else {
-                    $('#link_to_movie').hide();
+
+            $.ajax({
+                url: '/movie/create',
+                cache: false,
+                processData: true,
+                data: inputs,
+                type: 'post',
+                success: function (php_script_response) {
+                    $('#message').show().removeClass('alert-success alert-danger').addClass(`alert-${php_script_response.status}`).html(php_script_response.message);
+                    if (php_script_response.status != 'danger') {
+                        $('#create')[0].reset();
+                        $('#link_to_movie').show().attr("href", "/movie/" + php_script_response.id)
+                    } else {
+                        $('#link_to_movie').hide();
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            $('#link_to_movie').hide();
+        }
 
 
     });

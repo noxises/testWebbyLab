@@ -36,9 +36,9 @@ $array = json_encode($movies);
                 <tr>
                     <th><?= $movie['id'] ?></th>
                     <td><?= $movie['title'] ?></td>
-                    <td> <?= $movie['year'] ?></td>
+                    <td><?= $movie['year'] ?></td>
                     <td><?= $movie['format'] ?></td>
-                    <td> <?= $movie['actors'] ?></td>
+                    <td><?= $movie['actors'] ?></td>
                     <td><a href="/movie/<?= $movie['id'] ?>">More</a></td>
                     <?php if ($_SESSION['loggedIn']) { ?>
                         <td><input type="checkbox" name="products[]" value="<?= $movie['id'] ?>"></td>
@@ -59,14 +59,16 @@ $array = json_encode($movies);
         var bName = b.year.toLowerCase();
         return ((aName < bName) ? -1 : ((aName > bName) ? 1 : 0));
     }
+
     function uaSort(s1, s2) {
-        var title= s1.title;
-        var title2= s2.title;
+        var title = s1.title;
+        var title2 = s2.title;
         return title.localeCompare(title2);
     }
+
     function uaSortActors(s1, s2) {
-        var title= s1.actors;
-        var title2= s2.actors;
+        var title = s1.actors;
+        var title2 = s2.actors;
         return title.localeCompare(title2);
     }
 
@@ -81,7 +83,7 @@ $array = json_encode($movies);
                 <td>${this.title}</td>
                 <td>${this.year}</td>
                 <td>${this.format}</td>
-                <td> ${this.actors}</td>
+                <td>${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
                 <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
@@ -101,7 +103,7 @@ $array = json_encode($movies);
                 <td>${this.title}</td>
                 <td>${this.year}</td>
                 <td>${this.format}</td>
-                <td> ${this.actors}</td>
+                <td>${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
                 <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
@@ -121,7 +123,7 @@ $array = json_encode($movies);
                 <td>${this.title}</td>
                 <td>${this.year}</td>
                 <td>${this.format}</td>
-                <td> ${this.actors}</td>
+                <td>${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
                 <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
@@ -140,7 +142,7 @@ $array = json_encode($movies);
                 <td>${this.title}</td>
                 <td>${this.year}</td>
                 <td>${this.format}</td>
-                <td> ${this.actors}</td>
+                <td>${this.actors}</td>
                 <td><a href="/movie/${this.id}">More</a></td>
                 <?php if ($_SESSION['loggedIn']) { ?>
                 <td><input type="checkbox" name="products[]" value="${this.id}"></td>
